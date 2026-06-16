@@ -1,0 +1,263 @@
+const T = {
+  en: {
+    // Header
+    appSubtitle: "Makan",
+    liveTag: "LIVE · 13 platforms",
+    grid: "Grid",
+    map: "Map",
+    listings: "listings",
+    listing: "listing",
+    inCity: "in",
+    forSaleTag: "FOR SALE",
+    forRentTag: "FOR RENT",
+
+    // Hero
+    heroTitle: "13 Platforms. One Search.",
+    heroDesc: "Enter a Saudi city and hit Scan. Real-time scraping across Bayut, Aqar, PropertyFinder, Wasalt, Sakani, Haraj and more.",
+
+    // Filter panel
+    filters: "Filters",
+    location: "Location",
+    locationPlaceholder: "City or district…",
+    listingType: "Listing Type",
+    forSale: "For Sale",
+    forRent: "For Rent",
+    propertyType: "Property Type",
+    price: "Price",
+    anyPrice: "Any Price",
+    anySize: "Any Size",
+    size: "Size (m²)",
+    minSize: "Min m²",
+    maxSize: "Max m²",
+    customRange: "Custom Range",
+    minPrice: "Min SAR",
+    maxPrice: "Max SAR",
+    bedrooms: "Bedrooms",
+    any: "Any",
+    platforms: "Platforms",
+    selectAll: "Select all",
+    deselectAll: "Deselect all",
+    scan: "Scan",
+    scanning: "Scanning",
+    platformsLabel: "platforms",
+    platformLabel: "platform",
+
+    // Property types
+    apartment: "Apartment",
+    villa: "Villa",
+    house: "House",
+    residential: "Residential",
+    building: "Building",
+    office: "Office",
+    shop: "Shop",
+    land: "Land",
+    commercial: "Commercial",
+
+    // Platform tiers
+    tierPremium: "Premium",
+    tierGovernment: "Government",
+    tierClassifieds: "Classifieds",
+    tierNiche: "Niche",
+
+    // Property card/detail
+    priceOnRequest: "Price on request",
+    sar: "SAR",
+    whatsapp: "WhatsApp",
+    call: "Call",
+    viewOn: "View on",
+    viewFull: "View Full Listing on",
+    listedOn: "Listed on",
+    saudiArabia: "Saudi Arabia",
+    bedroomsLabel: "Bedrooms",
+    bathroomsLabel: "Bathrooms",
+    areaLabel: "Area",
+    whatsappBroker: "WhatsApp Broker",
+
+    // Grid
+    noListings: "No listings found",
+    noListingsHint: "Try a different city, price range, or property type.",
+    sortLabel: "Sort",
+    sortDefault: "Default",
+    sortPriceAsc: "Price ↑",
+    sortPriceDesc: "Price ↓",
+    sortBedsAsc: "Beds ↑",
+    sortBedsDesc: "Beds ↓",
+    sortAreaAsc: "Area ↑",
+    sortAreaDesc: "Area ↓",
+    showingOf: "Showing {0} of {1} listings",
+    resultsSoFar: "{0} results so far…",
+    allLabel: "All",
+    prevPage: "Previous",
+    nextPage: "Next",
+    pageOf: "Page {0} of {1}",
+
+    // Map
+    areaSelect: "Area Select",
+    dragToSelect: "Drag to select",
+    listingsOnMap: "listings on map",
+    clickCity: "Click a city to search there",
+    dragInstruction: "Click and drag on the map to select a search area",
+
+    // Loading
+    liveScan: "Live Scan in Progress",
+    scanningLabel: "SCANNING",
+    found: "found",
+
+    // Broker tab
+    tabListings: "Listings",
+    tabBrokers: "Find Broker",
+    findBrokers: "Find Brokers",
+    brokerHeroTitle: "Find Real Estate Brokers",
+    brokerHeroDesc: "Select a city or district and scan to find active brokers across all platforms.",
+    brokersFound: "brokers found",
+    listingsFound: "listings",
+    unknownBroker: "Unknown Broker",
+    viewProfile: "View Profile",
+    noContact: "No contact info",
+    noBrokers: "No brokers found",
+    noBrokersHint: "Try a different city or platform.",
+    allCitiesBrokers: "All Saudi Cities",
+    exportExcel: "Export to Excel",
+    regaLicense: "REGA Ad License",
+    deedNumber: "Deed Number",
+    regaVerified: "REGA Verified",
+    brokerTitle: "Broker Information",
+    brokerAgency: "Agency",
+    brokerName: "Broker Name",
+  },
+
+  ar: {
+    // Header
+    appSubtitle: "مكان",
+    liveTag: "مباشر · ١٣ منصة",
+    grid: "شبكة",
+    map: "خريطة",
+    listings: "عقارات",
+    listing: "عقار",
+    inCity: "في",
+    forSaleTag: "للبيع",
+    forRentTag: "للإيجار",
+
+    // Hero
+    heroTitle: "١٣ منصة. بحث واحد.",
+    heroDesc: "أدخل مدينة سعودية واضغط مسح. بحث فوري عبر بيوت، عقار، بروبرتي فايندر، وصلت، سكني، حراج والمزيد.",
+
+    // Filter panel
+    filters: "الفلاتر",
+    location: "الموقع",
+    locationPlaceholder: "مدينة أو حي…",
+    listingType: "نوع الإعلان",
+    forSale: "للبيع",
+    forRent: "للإيجار",
+    propertyType: "نوع العقار",
+    price: "السعر",
+    anyPrice: "أي سعر",
+    anySize: "أي مساحة",
+    size: "المساحة (م²)",
+    minSize: "أقل م²",
+    maxSize: "أعلى م²",
+    customRange: "نطاق مخصص",
+    minPrice: "الحد الأدنى",
+    maxPrice: "الحد الأقصى",
+    bedrooms: "غرف النوم",
+    any: "الكل",
+    platforms: "المنصات",
+    selectAll: "تحديد الكل",
+    deselectAll: "إلغاء الكل",
+    scan: "مسح",
+    scanning: "جاري المسح",
+    platformsLabel: "منصة",
+    platformLabel: "منصة",
+
+    // Property types
+    apartment: "شقة",
+    villa: "فيلا",
+    house: "منزل",
+    residential: "عمارة/مبنى",
+    building: "عمارة",
+    office: "مكتب",
+    shop: "محل",
+    land: "أرض",
+    commercial: "تجاري",
+
+    // Platform tiers
+    tierPremium: "مميز",
+    tierGovernment: "حكومي",
+    tierClassifieds: "إعلانات",
+    tierNiche: "متخصص",
+
+    // Property card/detail
+    priceOnRequest: "السعر عند الطلب",
+    sar: "ريال",
+    whatsapp: "واتساب",
+    call: "اتصال",
+    viewOn: "عرض على",
+    viewFull: "عرض الإعلان على",
+    listedOn: "مدرج على",
+    saudiArabia: "المملكة العربية السعودية",
+    bedroomsLabel: "غرف النوم",
+    bathroomsLabel: "دورات المياه",
+    areaLabel: "المساحة",
+    whatsappBroker: "واتساب الوسيط",
+
+    // Grid
+    noListings: "لا توجد عقارات",
+    noListingsHint: "جرّب مدينة مختلفة أو نطاق سعر أو نوع عقار آخر.",
+    sortLabel: "ترتيب",
+    sortDefault: "افتراضي",
+    sortPriceAsc: "السعر ↑",
+    sortPriceDesc: "السعر ↓",
+    sortBedsAsc: "الغرف ↑",
+    sortBedsDesc: "الغرف ↓",
+    sortAreaAsc: "المساحة ↑",
+    sortAreaDesc: "المساحة ↓",
+    showingOf: "عرض {0} من {1} عقار",
+    resultsSoFar: "{0} نتيجة حتى الآن…",
+    allLabel: "الكل",
+    prevPage: "السابق",
+    nextPage: "التالي",
+    pageOf: "صفحة {0} من {1}",
+
+    // Map
+    areaSelect: "تحديد منطقة",
+    dragToSelect: "اسحب للتحديد",
+    listingsOnMap: "عقار على الخريطة",
+    clickCity: "انقر على مدينة للبحث فيها",
+    dragInstruction: "انقر واسحب على الخريطة لتحديد منطقة البحث",
+
+    // Loading
+    liveScan: "جاري المسح المباشر",
+    scanningLabel: "مسح",
+    found: "تم إيجاد",
+
+    // Broker tab
+    tabListings: "العقارات",
+    tabBrokers: "ابحث عن وسيط",
+    findBrokers: "ابحث عن وسطاء",
+    brokerHeroTitle: "ابحث عن وسطاء العقارات",
+    brokerHeroDesc: "اختر مدينة أو حياً واضغط مسح لإيجاد الوسطاء النشطين عبر جميع المنصات.",
+    brokersFound: "وسيط",
+    listingsFound: "إعلان",
+    unknownBroker: "وسيط غير معروف",
+    viewProfile: "عرض الملف",
+    noContact: "لا توجد معلومات اتصال",
+    noBrokers: "لم يتم العثور على وسطاء",
+    noBrokersHint: "جرّب مدينة أو منصة مختلفة.",
+    allCitiesBrokers: "جميع مدن المملكة",
+    exportExcel: "تصدير إلى Excel",
+    regaLicense: "رخصة إعلان الهيئة العامة للعقار",
+    deedNumber: "رقم الصك",
+    regaVerified: "مرخص من الهيئة العامة للعقار",
+    brokerTitle: "بيانات الوسيط",
+    brokerAgency: "المنشأة",
+    brokerName: "اسم الوسيط",
+  },
+};
+
+export function t(lang, key, ...args) {
+  let str = T[lang]?.[key] ?? T.en[key] ?? key;
+  args.forEach((arg, i) => { str = str.replace(`{${i}}`, arg); });
+  return str;
+}
+
+export default T;

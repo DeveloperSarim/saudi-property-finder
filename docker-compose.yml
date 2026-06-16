@@ -1,0 +1,48 @@
+services:
+  # ─── Backend: FastAPI ─────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: property-backend
+    restart: unless-stopped
+    environment:
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - PYTHONUNBUFFERED=1
+    ports:
+      # Unique internal port — change BACKEND_PORT in .env if 8001 is taken
+      - "${BACKEND_PORT:-8001}:8000"
+    networks:
+      - property-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 25s
+
+  # ─── Frontend: React built + Nginx ───────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # API URL baked into the React build
+        # Set this in .env → VITE_API_URL=https://your-domain.com/api
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8001}
+    container_name: property-frontend
+    restart: unless-stopped
+    ports:
+      # Change FRONTEND_PORT in .env if 3001 is taken
+      - "${FRONTEND_PORT:-3001}:80"
+    networks:
+      - property-net
+    depends_on:
+      backend:
+        condition: service_healthy
+
+networks:
+  # Isolated network — no clash with your other Docker apps
+  property-net:
+    name: property-net
+    driver: bridge

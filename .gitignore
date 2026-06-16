@@ -1,0 +1,27 @@
+# Secrets — NEVER commit
+.env
+*.env.local
+
+# macOS
+.DS_Store
+.claude/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Logs
+*.log
+
+# SSL certs
+nginx/certs/
+
+# Misc
+Versions/
