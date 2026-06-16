@@ -1,0 +1,48 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Saudi Property Finder — Production Docker Compose
+# Uses pre-built images from GitHub Container Registry (ghcr.io)
+#
+# ONE COMMAND DEPLOY on any VPS:
+#   docker compose -f https://raw.githubusercontent.com/DeveloperSarim/saudi-property-finder/main/docker-compose.prod.yml up -d
+#
+# UPDATE to latest:
+#   docker compose -f https://raw.githubusercontent.com/DeveloperSarim/saudi-property-finder/main/docker-compose.prod.yml pull && docker compose -f https://raw.githubusercontent.com/DeveloperSarim/saudi-property-finder/main/docker-compose.prod.yml up -d
+# ══════════════════════════════════════════════════════════════════════════════
+
+services:
+  # ─── Backend: FastAPI ─────────────────────────────────────────────────────────
+  backend:
+    image: ghcr.io/developersarim/saudi-property-finder-backend:latest
+    container_name: property-backend
+    restart: unless-stopped
+    environment:
+      - CORS_ORIGINS=*
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8001:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 25s
+    networks:
+      - property-net
+
+  # ─── Frontend: React + Nginx ──────────────────────────────────────────────────
+  frontend:
+    image: ghcr.io/developersarim/saudi-property-finder-frontend:latest
+    container_name: property-frontend
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - property-net
+
+networks:
+  property-net:
+    name: property-net
+    driver: bridge
