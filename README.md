@@ -2,115 +2,87 @@
 
 Real-time property aggregator for Saudi Arabia — scrapes Bayut, Aqar, Wasalt, PropertyFinder & 9 more platforms simultaneously.
 
-## Tech Stack
-- **Backend**: FastAPI + Python (curl_cffi for anti-bot bypass)
-- **Frontend**: React + Vite + Leaflet Maps
-- **Deployment**: Docker Compose (VPS)
+## ⚡ One-Command VPS Deploy
+
+SSH into your VPS and run **just this one command**:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/DeveloperSarim/saudi-property-finder/main/setup.sh | bash
+```
+
+That's it. The script automatically:
+- ✅ Installs Docker (if not already installed)
+- ✅ Clones this repo to `/opt/saudi-property-finder`
+- ✅ Finds free ports (default 8001 backend, 3001 frontend)
+- ✅ Creates `.env` config automatically
+- ✅ Builds both containers (backend + frontend)
+- ✅ Launches everything with `docker compose up -d`
+- ✅ Configures Nginx site (if Nginx is installed)
+- ✅ Shows you the URL to open in browser
 
 ---
 
-## 🚀 VPS Deployment (Hostinger / Any Linux VPS)
+## 🔄 Update to Latest Code
 
-### Prerequisites
-- Ubuntu 22.04 VPS
-- Domain/subdomain pointing to VPS IP
-- Nginx already installed on VPS
+Same command — re-run it anytime to pull latest changes and rebuild:
 
-### Step 1 — Install Docker on VPS
 ```bash
-ssh root@YOUR_VPS_IP
-curl -fsSL https://get.docker.com | sh
-apt-get install -y docker-compose-plugin
-```
-
-### Step 2 — Clone & Configure
-```bash
-cd /opt
-git clone https://github.com/DeveloperSarim/saudi-property-finder.git
-cd saudi-property-finder
-
-# Create .env from template
-cp .env.example .env
-nano .env
-```
-
-Fill in your `.env`:
-```env
-DOMAIN=property.yourdomain.com
-VITE_API_URL=https://property.yourdomain.com/api
-CORS_ORIGINS=https://property.yourdomain.com
-BACKEND_PORT=8001
-FRONTEND_PORT=3001
-```
-
-### Step 3 — Add Nginx Site Config
-```bash
-# Copy provided config
-cp nginx/nginx-vps-site.conf /etc/nginx/sites-available/property-finder
-
-# Replace YOUR_DOMAIN in the file
-sed -i 's/YOUR_DOMAIN/property.yourdomain.com/g' /etc/nginx/sites-available/property-finder
-
-# Enable the site
-ln -s /etc/nginx/sites-available/property-finder /etc/nginx/sites-enabled/
-
-# Test and reload Nginx
-nginx -t && systemctl reload nginx
-```
-
-### Step 4 — Get Free SSL
-```bash
-certbot --nginx -d property.yourdomain.com
-```
-
-### Step 5 — Build & Launch
-```bash
-cd /opt/saudi-property-finder
-docker compose up -d --build
-```
-
-First build takes 3–5 minutes. When done:
-```bash
-docker compose ps          # All services should show "healthy"
-curl https://property.yourdomain.com/health  # Should return {"status":"ok"}
+curl -fsSL https://raw.githubusercontent.com/DeveloperSarim/saudi-property-finder/main/setup.sh | bash
 ```
 
 ---
 
-## 🔄 Update Deployment
+## 📋 Useful Commands (After Deploy)
 
 ```bash
 cd /opt/saudi-property-finder
-git pull
-docker compose up -d --build
-```
 
-## 📋 Useful Commands
-
-```bash
 # View logs
 docker compose logs -f
 
 # Backend logs only
 docker compose logs -f backend
 
+# Container status
+docker compose ps
+
 # Restart backend
 docker compose restart backend
 
-# Stop all
+# Stop everything
 docker compose down
 ```
 
 ---
 
-## ⚙️ Configuration
+## 🌐 Add Domain + SSL (Optional)
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DOMAIN` | — | Your domain (required) |
-| `VITE_API_URL` | — | Full API URL including /api (required) |
-| `CORS_ORIGINS` | `*` | Frontend domain for CORS |
-| `BACKEND_PORT` | `8001` | Change if port is taken |
-| `FRONTEND_PORT` | `3001` | Change if port is taken |
+After the initial setup works with IP:
 
-> **Note**: If ports 8001 or 3001 are already used by other apps on your VPS, change them in `.env`.
+```bash
+# 1. Add this to your domain DNS:
+#    A Record: your-domain.com → YOUR_VPS_IP
+
+# 2. Update Nginx config domain
+sed -i 's/server_name .*/server_name your-domain.com;/' /etc/nginx/sites-available/saudi-property-finder
+nginx -t && systemctl reload nginx
+
+# 3. Get free SSL
+certbot --nginx -d your-domain.com
+
+# 4. Update .env with your domain
+cd /opt/saudi-property-finder
+echo "VITE_API_URL=https://your-domain.com/api" >> .env
+echo "CORS_ORIGINS=https://your-domain.com" >> .env
+
+# 5. Rebuild frontend with domain URL
+docker compose up -d --build frontend
+```
+
+---
+
+## Tech Stack
+- **Backend**: FastAPI + Python (curl_cffi for anti-bot browser impersonation)
+- **Frontend**: React + Vite + Leaflet Maps
+- **Platforms**: Bayut, Aqar, PropertyFinder, Wasalt, Sakani, Haraj, OpenSooq, Expatriates, Mourjan, Satel, Zaahib, Bezaat, SaudiDeal
+- **Deployment**: Docker Compose (VPS)
