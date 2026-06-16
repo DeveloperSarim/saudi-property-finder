@@ -218,7 +218,12 @@ function MultiSearchableDropdown({ items, values, onChange, placeholder, icon })
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+// Auto-detect backend URL — same logic as App.js
+const API_BASE = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace(/\/$/, "")
+  : typeof window !== "undefined"
+    ? `${window.location.protocol}//${window.location.hostname}:8001`
+    : "http://localhost:8001";
 
 export default function FilterPanel({ filters, onChange, onSearch, loading, selectedPlatforms, onPlatformsChange, lang }) {
   const [selectedCity,      setSelectedCity]      = useState("");
