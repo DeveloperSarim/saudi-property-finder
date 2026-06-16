@@ -112,3 +112,75 @@ docker run -d \
   --restart always \
   ghcr.io/flaresolverr/flaresolverr:latest
 ```
+
+---
+
+## 🌐 GitHub Workflow & Hostinger VPS Deployment
+
+### 1. Pushing Local Changes to GitHub
+To push any edits you make locally on your Mac to your GitHub repository:
+```bash
+# 1. Stage all changes
+git add .
+
+# 2. Commit changes
+git commit -m "feat: updated deployment configuration"
+
+# 3. Push to GitHub (This triggers GitHub Actions to build new Docker images)
+git push origin main
+```
+
+---
+
+### 2. Deploying on Hostinger VPS (hPanel Terminal or SSH)
+
+There are two ways to run the project on your VPS.
+
+#### 🔹 Option A: Lightweight Deployment (Highly Recommended)
+No need to clone the full repository or build files on your server. You only download the production `docker-compose.yml` file, which pulls pre-built Docker images from GitHub Container Registry.
+
+In your Hostinger hPanel VPS terminal or SSH:
+```bash
+# 1. Create a clean folder and enter it
+mkdir -p saudi-property-finder && cd saudi-property-finder
+
+# 2. Download the production docker-compose file
+curl -sSL https://raw.githubusercontent.com/DeveloperSarim/saudi-property-finder/main/docker-compose.prod.yml -o docker-compose.yml
+
+# 3. Spin up the containers
+docker compose up -d
+```
+*   **Access the App:**
+    *   **Frontend:** `http://<YOUR_VPS_IP>:3001`
+    *   **Backend:** `http://<YOUR_VPS_IP>:8001`
+
+#### 🔹 Option B: Automated Setup Script (setup.sh)
+If you want to auto-install Docker, check for free ports dynamically, and auto-configure Nginx:
+```bash
+curl -fsSL https://raw.githubusercontent.com/DeveloperSarim/saudi-property-finder/main/setup.sh | bash
+```
+
+---
+
+### 3. Running with Custom Ports (To Avoid Conflicts)
+If ports `3001` or `8001` are already in use by other apps on your Hostinger VPS, you can launch the app on custom ports without changing any files:
+```bash
+# Run on frontend port 3005 and backend port 8005
+BACKEND_PORT=8005 FRONTEND_PORT=3005 docker compose up -d
+```
+
+---
+
+### 4. Updating the VPS Application
+When you push new updates to GitHub, the Docker images are rebuilt automatically. To apply those updates to your VPS, run:
+```bash
+# Go to the folder
+cd saudi-property-finder
+
+# Pull the latest pre-built images
+docker compose pull
+
+# Restart containers with the updated images
+docker compose up -d
+```
+
