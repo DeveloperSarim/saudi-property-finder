@@ -141,8 +141,17 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
     if (city) mapRef.current.flyTo([city.lat, city.lng], 12, { duration: 1.2 });
   }, [selectedCity, ready]);
 
-  // ── Sync selectMode ref ───────────────────────────────────────────────────
-  useEffect(() => { selectModeRef.current = selectMode; }, [selectMode]);
+  // ── Sync selectMode ref & disable map panning when drawing ────────────────
+  useEffect(() => {
+    selectModeRef.current = selectMode;
+    if (mapRef.current) {
+      if (selectMode) {
+        mapRef.current.dragging.disable();
+      } else {
+        mapRef.current.dragging.enable();
+      }
+    }
+  }, [selectMode]);
 
   // ── City pins (when no listings) ─────────────────────────────────────────
   useEffect(() => {
@@ -300,7 +309,7 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
       )}
 
       {/* City hint */}
-      {listings.length === 0 && (
+      {listings.length === 0 && !selectedCity && (
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[1000] bg-white/80
                         border border-slate-700/20 rounded-xl px-4 py-2 text-xs font-mono
                         text-slate-500 pointer-events-none whitespace-nowrap">

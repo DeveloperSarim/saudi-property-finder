@@ -5,16 +5,16 @@ module.exports = {
     extend: {
       colors: {
         slate: {
-          950: "var(--slate-950)",
-          900: "var(--slate-900)",
-          800: "var(--slate-800)",
-          700: "var(--slate-700)",
-          600: "var(--slate-600)",
-          500: "var(--slate-500)",
-          400: "var(--slate-400)",
-          300: "var(--slate-300)",
-          200: "var(--slate-200)",
-          100: "var(--slate-100)",
+          950: "rgb(var(--slate-950) / <alpha-value>)",
+          900: "rgb(var(--slate-900) / <alpha-value>)",
+          800: "rgb(var(--slate-800) / <alpha-value>)",
+          700: "rgb(var(--slate-700) / <alpha-value>)",
+          600: "rgb(var(--slate-600) / <alpha-value>)",
+          500: "rgb(var(--slate-500) / <alpha-value>)",
+          400: "rgb(var(--slate-400) / <alpha-value>)",
+          300: "rgb(var(--slate-300) / <alpha-value>)",
+          200: "rgb(var(--slate-200) / <alpha-value>)",
+          100: "rgb(var(--slate-100) / <alpha-value>)",
         },
         emerald: {
           400: "#34d399",

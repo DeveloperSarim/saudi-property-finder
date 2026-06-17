@@ -60,10 +60,44 @@ export default function App() {
   const [viewMode, setViewMode]             = useState("grid");
   const [selectedListing, setSelectedListing] = useState(null);
   const [lang, setLang]                     = useState("en");
+  const [mapFilter, setMapFilter]           = useState(null);
   const esRef = useRef(null);
 
+  const getDistance = useCallback((lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }, []);
+
+  const filteredListings = React.useMemo(() => {
+    if (!mapFilter) return listings;
+    if (mapFilter.type === "bounds") {
+      const { southWest, northEast } = mapFilter.value;
+      return listings.filter(l => {
+        if (!l.lat || !l.lng) return false;
+        return l.lat >= southWest.lat && l.lat <= northEast.lat &&
+               l.lng >= southWest.lng && l.lng <= northEast.lng;
+      });
+    }
+    if (mapFilter.type === "radius") {
+      const { lat, lng } = mapFilter.center;
+      const r = mapFilter.radiusKm;
+      return listings.filter(l => {
+        if (!l.lat || !l.lng) return false;
+        return getDistance(lat, lng, l.lat, l.lng) <= r;
+      });
+    }
+    return listings;
+  }, [listings, mapFilter, getDistance]);
+
   const handleExportCSV = useCallback(() => {
-    if (listings.length === 0) return;
+    if (filteredListings.length === 0) return;
     const headers = [
       "Title",
       "Price (SAR)",
@@ -80,7 +114,7 @@ export default function App() {
       "Broker Name",
       "Broker Agency"
     ];
-    const rows = listings.map(l => [
+    const rows = filteredListings.map(l => [
       l.title || "",
       l.price_sar || 0,
       l.rent_period || "",
@@ -115,7 +149,7 @@ export default function App() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }, [listings, filters.location]);
+  }, [filteredListings, filters.location]);
 
   const stopSearch = useCallback(() => {
     if (esRef.current) { esRef.current.close(); esRef.current = null; }
@@ -129,6 +163,7 @@ export default function App() {
     if (esRef.current) esRef.current.close();
 
     setListings([]);
+    setMapFilter(null);
     setLoading(true);
     setHasSearched(true);
     setScanStatus({ platform:"Initialising", message:"Preparing engines…", counts:{} });
@@ -176,11 +211,16 @@ export default function App() {
     setFilters(f => ({ ...f, location: city }));
   }, []);
 
-  const handleAreaSearch = useCallback(({ lat, lng }) => {
-    const city = nearestCity(lat, lng);
-    setFilters(f => ({ ...f, location: city }));
-    doSearch(city);
-  }, [doSearch]);
+  const handleAreaSearch = useCallback(({ bounds }) => {
+    if (!bounds) return;
+    setMapFilter({
+      type: "bounds",
+      value: {
+        southWest: { lat: bounds.getSouthWest().lat, lng: bounds.getSouthWest().lng },
+        northEast: { lat: bounds.getNorthEast().lat, lng: bounds.getNorthEast().lng }
+      }
+    });
+  }, []);
 
   const isRtl = lang === "ar";
 
@@ -324,14 +364,15 @@ export default function App() {
             </div>
           )}
 
-          {viewMode === "grid" && (hasSearched || listings.length > 0) && (
-            <PropertyGrid listings={listings} loading={loading} hasSearched={hasSearched}
+          {viewMode === "grid" && (hasSearched || filteredListings.length > 0) && (
+            <PropertyGrid listings={filteredListings} loading={loading} hasSearched={hasSearched}
                           onCardClick={setSelectedListing} lang={lang} />
           )}
 
           {viewMode === "map" && (
             <div className="h-[calc(100vh-10rem)] min-h-[500px]">
-              <MapView listings={listings} selectedCity={filters.location}
+              <MapView listings={filteredListings} selectedCity={filters.location}
+                       mapFilter={mapFilter} setMapFilter={setMapFilter}
                        onCitySelect={handleCitySelect} onAreaSearch={handleAreaSearch}
                        onListingClick={setSelectedListing} lang={lang} />
             </div>
