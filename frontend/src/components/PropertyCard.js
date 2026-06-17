@@ -2,12 +2,21 @@ import React, { useState } from "react";
 import { t } from "../i18n";
 
 const PLATFORM_COLORS = {
-  Bayut:"#10b981", Aqar:"#38bdf8", PropertyFinder:"#f59e0b",
-  Wasalt:"#a78bfa", Sakani:"#34d399", Haraj:"#fb923c",
-  OpenSooq:"#e879f9", Expatriates:"#60a5fa", Mourjan:"#f472b6",
-  Satel:"#fbbf24", Zaahib:"#4ade80", Bezaat:"#c084fc", SaudiDeal:"#f87171",
+  Bayut: "#059669",
+  Aqar: "#0284c7",
+  PropertyFinder: "#d97706",
+  Wasalt: "#7c3aed",
+  Sakani: "#059669",
+  Haraj: "#d97706",
+  OpenSooq: "#c026d3",
+  Expatriates: "#2563eb",
+  Mourjan: "#db2777",
+  Satel: "#b45309",
+  Zaahib: "#15803d",
+  Bezaat: "#7e22ce",
+  SaudiDeal: "#dc2626",
 };
-const pc = (n) => PLATFORM_COLORS[n] || "#10b981";
+const pc = (n) => PLATFORM_COLORS[n] || "#059669";
 
 function fmt(price) {
   if (!price || price === 0) return null;
@@ -47,14 +56,14 @@ export default function PropertyCard({ listing, index, onClick, lang = "en" }) {
 
   return (
     <article
-      className="card-enter card-glow bg-slate-800/60 border border-slate-700/60 rounded-2xl
+      className="card-enter card-glow bg-slate-900 border border-slate-700/60 rounded-2xl
                  overflow-hidden flex flex-col cursor-pointer group transition-all duration-300
-                 hover:border-slate-600/80"
+                 hover:border-emerald-500/30"
       style={{ animationDelay:`${delay}ms`, animationFillMode:"both" }}
       onClick={() => onClick?.(listing)}
     >
       {/* ── Image ── */}
-      <div className="relative h-44 bg-slate-900 overflow-hidden shrink-0">
+      <div className="relative h-44 bg-slate-800 overflow-hidden shrink-0">
         {listing.image_url && !imgErr ? (
           <img
             src={listing.image_url}
@@ -65,13 +74,13 @@ export default function PropertyCard({ listing, index, onClick, lang = "en" }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <svg width="36" height="36" viewBox="0 0 40 40" fill="none" className="text-slate-700">
+            <svg width="36" height="36" viewBox="0 0 40 40" fill="none" className="text-slate-500">
               <path d="M20 4L4 15v22h10V25h12v12h10V15L20 4z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
             </svg>
           </div>
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: color }} />
 
         <div className="absolute top-3 start-3 flex items-center gap-1.5">

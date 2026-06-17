@@ -1,22 +1,24 @@
+@import "leaflet/dist/leaflet.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Leaflet map */
-@import "leaflet/dist/leaflet.css";
-
 :root {
-  --slate-950: #020617;
-  --slate-900: #0f172a;
-  --slate-800: #1e293b;
-  --slate-700: #334155;
-  --slate-600: #475569;
-  --slate-500: #64748b;
-  --slate-400: #94a3b8;
-  --slate-300: #cbd5e1;
-  --emerald-400: #34d399;
-  --emerald-500: #10b981;
-  --emerald-600: #059669;
+  --slate-950: #f8fafc; /* Lightest grey background */
+  --slate-900: #ffffff; /* Pure white panels & header background */
+  --slate-800: #f1f5f9; /* Clean light grey cards/controls */
+  --slate-700: #e2e8f0; /* Crisp light grey borders */
+  --slate-600: #cbd5e1; /* Secondary border color */
+  --slate-500: #94a3b8; /* Secondary metadata text */
+  --slate-400: #64748b; /* Muted description text */
+  --slate-300: #475569; /* Standard body text */
+  --slate-200: #1e293b; /* Accent headers & subheadings */
+  --slate-100: #0f172a; /* Primary black titles and values */
+
+  --emerald-400: #059669; /* Readable green on light backgrounds */
+  --emerald-500: #10b981; /* Standard emerald for accents */
+  --emerald-600: #047857; /* Hover emerald states */
 }
 
 * {
@@ -29,20 +31,20 @@ html {
 
 body {
   margin: 0;
-  background: var(--slate-900);
-  color: var(--slate-100);
+  background: var(--slate-950);
+  color: var(--slate-300);
   font-family: "DM Sans", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
-/* Dot-grid background texture */
+/* Dot-grid background texture for light mode */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
   background-size: 28px 28px;
   pointer-events: none;
   z-index: 0;
@@ -56,8 +58,8 @@ body::before {
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--slate-900); }
-::-webkit-scrollbar-thumb { background: var(--slate-700); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--slate-600); }
+::-webkit-scrollbar-thumb { background: var(--slate-600); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--slate-500); }
 
 /* Range slider reset */
 input[type="range"] {
@@ -82,12 +84,12 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--emerald-500);
   margin-top: -6px;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
   transition: box-shadow 0.15s ease;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.25);
 }
 
 input[type="range"]::-moz-range-track {
@@ -114,12 +116,16 @@ select {
   appearance: none;
 }
 
-/* Card hover glow */
+/* Card hover glow (Soft premium shadow instead of dark heavy shadow) */
+.card-glow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
 .card-glow:hover {
   box-shadow:
-    0 0 0 1px rgba(16, 185, 129, 0.3),
-    0 8px 32px rgba(16, 185, 129, 0.08),
-    0 2px 8px rgba(0, 0, 0, 0.4);
+    0 0 0 1px rgba(16, 185, 129, 0.35),
+    0 12px 28px rgba(16, 185, 129, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* Shimmer skeleton */
@@ -139,17 +145,13 @@ select {
   100% { background-position: -200% 0; }
 }
 
-/* Source badge variants */
-.badge-bayut {
-  background: rgba(16, 185, 129, 0.12);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.25);
-}
-
-.badge-aqar {
-  background: rgba(56, 189, 248, 0.12);
-  color: #7dd3fc;
-  border: 1px solid rgba(56, 189, 248, 0.25);
+/* Custom leaflet tweaks for light mode */
+.leaflet-tooltip-dark {
+  background: var(--slate-900) !important;
+  color: var(--slate-100) !important;
+  border: 1px solid var(--slate-700) !important;
+  border-radius: 6px;
+  font-family: monospace;
 }
 
 /* Toggle switch */

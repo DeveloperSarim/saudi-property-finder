@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { t } from "../i18n";
 
 const PLATFORM_COLORS = {
-  Bayut: "#10b981", Aqar: "#38bdf8", PropertyFinder: "#f59e0b",
-  Wasalt: "#a78bfa", Sakani: "#34d399", Haraj: "#fb923c",
-  OpenSooq: "#e879f9", Expatriates: "#60a5fa", Mourjan: "#f472b6",
-  Satel: "#fbbf24", Zaahib: "#4ade80", Bezaat: "#c084fc", SaudiDeal: "#f87171",
+  Bayut: "#059669", Aqar: "#0284c7", PropertyFinder: "#d97706",
+  Wasalt: "#7c3aed", Sakani: "#059669", Haraj: "#d97706",
+  OpenSooq: "#c026d3", Expatriates: "#2563eb", Mourjan: "#db2777",
+  Satel: "#b45309", Zaahib: "#15803d", Bezaat: "#7e22ce", SaudiDeal: "#dc2626",
 };
-const pc = (n) => PLATFORM_COLORS[n] || "#10b981";
+const pc = (n) => PLATFORM_COLORS[n] || "#059669";
 
 function fmt(p) {
   if (!p || p === 0) return null;

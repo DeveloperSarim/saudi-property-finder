@@ -1168,7 +1168,13 @@ class WasaltScraper(BaseScraper):
 
     def _parse_props(self, raw: list, seen_ids: set, purpose: str, city_slug: str) -> list[dict]:
         results = []
-        for p in raw:
+        flat_raw = []
+        for item in raw:
+            if isinstance(item, list):
+                flat_raw.extend(item)
+            elif isinstance(item, dict):
+                flat_raw.append(item)
+        for p in flat_raw:
             pi    = p.get("propertyInfo") or p
             loc   = p.get("location")     or {}
             _own  = p.get("propertyOwner") or p.get("owner") or {}

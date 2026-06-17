@@ -3,12 +3,12 @@ import { t } from "../i18n";
 
 // ── Platform colours ──────────────────────────────────────────────────────────
 const PLATFORM_COLORS = {
-  Bayut: "#10b981", Aqar: "#38bdf8", PropertyFinder: "#f59e0b",
-  Wasalt: "#a78bfa", Sakani: "#34d399", Haraj: "#fb923c",
-  OpenSooq: "#e879f9", Expatriates: "#60a5fa", Mourjan: "#f472b6",
-  Satel: "#fbbf24", Zaahib: "#4ade80", Bezaat: "#c084fc", SaudiDeal: "#f87171",
+  Bayut: "#059669", Aqar: "#0284c7", PropertyFinder: "#d97706",
+  Wasalt: "#7c3aed", Sakani: "#059669", Haraj: "#d97706",
+  OpenSooq: "#c026d3", Expatriates: "#2563eb", Mourjan: "#db2777",
+  Satel: "#b45309", Zaahib: "#15803d", Bezaat: "#7e22ce", SaudiDeal: "#dc2626",
 };
-const pc = (n) => PLATFORM_COLORS[n] || "#10b981";
+const pc = (n) => PLATFORM_COLORS[n] || "#059669";
 
 // ── City pins ────────────────────────────────────────────────────────────────
 const CITIES = [
@@ -32,7 +32,7 @@ const CITIES = [
 function fmt(p, rentPeriod) {
   if (!p) return "POA";
   const num = p.toLocaleString("en-US");
-  return rentPeriod ? `${num} SAR${rentPeriod}` : `${num} SAR`;
+  return rentPeriod ? `${num} SAR ${rentPeriod}` : `${num} SAR`;
 }
 
 // ── Load Leaflet from CDN (avoids npm install) ───────────────────────────────
@@ -61,9 +61,10 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
   const mapRef = useRef(null);
   const markersRef = useRef([]);
   const cityMarkersRef = useRef([]);
+  const tileLayerRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [selectMode, setSelectMode] = useState(false);
-  const [drawLayer, setDrawLayer] = useState(null);
+  const [mapType, setMapType] = useState("roadmap"); // roadmap | satellite
   const selectModeRef = useRef(false);
   const drawStart = useRef(null);
   const drawRect = useRef(null);
@@ -81,9 +82,12 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
         attributionControl: false,
       });
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        maxZoom: 19,
+      // Google Maps standard roadmap tiles
+      const tileLayer = L.tileLayer("https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+        subdomains: ["0", "1", "2", "3"],
+        maxZoom: 20,
       }).addTo(map);
+      tileLayerRef.current = tileLayer;
 
       L.control.zoom({ position: "bottomright" }).addTo(map);
       mapRef.current = map;
@@ -123,6 +127,13 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
     return () => { if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; } };
   }, []);
 
+  // ── Sync mapType to tile layer URL ─────────────────────────────────────────
+  useEffect(() => {
+    if (!ready || !tileLayerRef.current) return;
+    const lyr = mapType === "satellite" ? "y" : "m";
+    tileLayerRef.current.setUrl(`https://mt{s}.google.com/vt/lyrs=${lyr}&x={x}&y={y}&z={z}`);
+  }, [mapType, ready]);
+
   // ── Fly to selected city ──────────────────────────────────────────────────
   useEffect(() => {
     if (!ready || !mapRef.current || !selectedCity) return;
@@ -145,8 +156,8 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
       const isSelected = selectedCity?.toLowerCase() === city.name.toLowerCase();
       const m = L.circleMarker([city.lat, city.lng], {
         radius: isSelected ? 10 : 6,
-        fillColor: isSelected ? "#10b981" : "#334155",
-        color: isSelected ? "#10b981" : "#475569",
+        fillColor: isSelected ? "#059669" : "#64748b",
+        color: isSelected ? "#059669" : "#94a3b8",
         weight: 2, fillOpacity: 1,
       }).addTo(mapRef.current);
 
@@ -169,7 +180,7 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
       const color = pc(listing.source_platform_name);
 
       const m = L.circleMarker([listing.lat, listing.lng], {
-        radius: 8, fillColor: color, color: "#0f172a",
+        radius: 8, fillColor: color, color: "#ffffff",
         weight: 1.5, fillOpacity: 0.85,
       }).addTo(mapRef.current);
 
@@ -187,27 +198,27 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
       const waMsg = encodeURIComponent(`مرحباً، أود الاستفسار عن: ${listing.title}\n${listing.source_url}`);
 
       popup.setContent(`
-        <div style="font-family:'DM Sans',sans-serif;background:#1e293b;border-radius:12px;overflow:hidden;min-width:220px;border:1px solid #334155">
+        <div style="font-family:'DM Sans',sans-serif;background:#ffffff;border-radius:12px;overflow:hidden;min-width:220px;border:1px solid #e2e8f0;box-shadow:0 4px 20px rgba(0,0,0,0.08)">
           ${listing.image_url ? `<img src="${listing.image_url}" style="width:100%;height:120px;object-fit:cover;display:block" loading="lazy" onerror="this.style.display='none'"/>` : ""}
           <div style="padding:12px">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
-              <span style="background:${color}22;color:${color};border:1px solid ${color}44;font-size:10px;font-family:monospace;padding:2px 8px;border-radius:6px">${listing.source_platform_name}</span>
+              <span style="background:${color}15;color:${color};border:1px solid ${color}30;font-size:10px;font-family:monospace;padding:2px 8px;border-radius:6px;font-weight:600">${listing.source_platform_name}</span>
             </div>
-            <p style="color:#e2e8f0;font-size:12px;font-weight:600;line-height:1.4;margin:0 0 6px;max-height:36px;overflow:hidden">${listing.title}</p>
+            <p style="color:#1e293b;font-size:12px;font-weight:600;line-height:1.4;margin:0 0 6px;max-height:36px;overflow:hidden">${listing.title}</p>
             <p style="color:${color};font-family:monospace;font-size:16px;font-weight:700;margin:0 0 4px">${fmt(listing.price_sar, listing.rent_period)}</p>
             <p style="color:#64748b;font-size:11px;margin:0 0 8px">${listing.location_detail}</p>
-            <div style="display:flex;gap:8px;font-size:11px;color:#94a3b8;margin-bottom:10px">
+            <div style="display:flex;gap:8px;font-size:11px;color:#64748b;margin-bottom:10px">
               ${listing.bedrooms!=="N/A"?`<span>🛏 ${listing.bedrooms}</span>`:""}
               ${listing.bathrooms!=="N/A"?`<span>🚿 ${listing.bathrooms}</span>`:""}
               ${listing.area_sqm>0?`<span>📐 ${listing.area_sqm}m²</span>`:""}
             </div>
             <div style="display:flex;gap:6px">
               <a href="${listing.source_url}" target="_blank" rel="noopener"
-                 style="flex:1;text-align:center;padding:6px;border-radius:8px;background:#334155;color:#cbd5e1;font-size:11px;font-family:monospace;text-decoration:none">
-                View on ${listing.source_platform_name}
+                 style="flex:1;text-align:center;padding:6px;border-radius:8px;background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;font-size:11px;font-family:monospace;text-decoration:none;font-weight:600">
+                View
               </a>
               ${waNum ? `<a href="https://wa.me/${waNum}?text=${waMsg}" target="_blank" rel="noopener"
-                 style="flex:1;text-align:center;padding:6px;border-radius:8px;background:#25d36622;color:#25d366;border:1px solid #25d36644;font-size:11px;font-family:monospace;text-decoration:none">
+                 style="flex:1;text-align:center;padding:6px;border-radius:8px;background:#25d36615;color:#25d366;border:1px solid #25d36630;font-size:11px;font-family:monospace;text-decoration:none;font-weight:600">
                 WhatsApp
               </a>` : ""}
             </div>
@@ -225,16 +236,33 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
   return (
     <div className="relative w-full h-full rounded-2xl overflow-hidden border border-slate-700/60">
       {/* Map container */}
-      <div ref={mapDiv} className="w-full h-full" style={{ background:"#0f172a" }} />
+      <div ref={mapDiv} className="w-full h-full" style={{ background:"#f1f5f9" }} />
 
       {/* Toolbar */}
-      <div className="absolute top-3 right-3 z-[1000] flex flex-col gap-2">
+      <div className="absolute top-3 right-3 z-[1000] flex items-center gap-2">
+        {/* Map Type Switcher */}
+        <div className="flex bg-white/95 border border-slate-700/20 rounded-xl p-0.5 shadow-lg">
+          <button
+            onClick={() => setMapType("roadmap")}
+            className={`px-3 py-1.5 rounded-lg text-[10px] font-mono font-600 transition-all ${mapType === "roadmap" ? "bg-emerald-500 text-white" : "text-slate-500 hover:text-slate-700"}`}
+          >
+            Map
+          </button>
+          <button
+            onClick={() => setMapType("satellite")}
+            className={`px-3 py-1.5 rounded-lg text-[10px] font-mono font-600 transition-all ${mapType === "satellite" ? "bg-emerald-500 text-white" : "text-slate-500 hover:text-slate-700"}`}
+          >
+            Satellite
+          </button>
+        </div>
+
+        {/* Area Select */}
         <button onClick={() => setSelectMode(v => !v)}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-600
                       border shadow-lg transition-all
             ${selectMode
-              ? "bg-emerald-500 border-emerald-400 text-slate-900"
-              : "bg-slate-800/90 border-slate-600 text-slate-300 hover:border-emerald-500/50"}`}>
+              ? "bg-emerald-500 border-emerald-500 text-white"
+              : "bg-white/95 border-slate-700/20 text-slate-600 hover:border-emerald-500/50 hover:text-emerald-600"}`}>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
           {selectMode ? t(lang,"dragToSelect") : t(lang,"areaSelect")}
         </button>
@@ -243,7 +271,7 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
       {/* Count badge */}
       {listings.length > 0 && (
         <div className="absolute top-3 left-3 z-[1000] flex items-center gap-1.5 px-3 py-1.5
-                        bg-slate-900/90 border border-slate-700 rounded-xl text-xs font-mono text-emerald-400 shadow-lg">
+                        bg-white/95 border border-slate-700/20 rounded-xl text-xs font-mono text-emerald-600 shadow-lg">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
           {listings.length} {t(lang,"listingsOnMap")}
         </div>
@@ -251,10 +279,10 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
 
       {/* Platform legend */}
       {platforms.length > 0 && (
-        <div className="absolute bottom-10 left-3 z-[1000] bg-slate-900/90 border border-slate-700
+        <div className="absolute bottom-10 left-3 z-[1000] bg-white/95 border border-slate-700/20
                         rounded-xl px-3 py-2 flex flex-col gap-1.5 shadow-lg max-h-52 overflow-y-auto">
           {platforms.map(name => (
-            <div key={name} className="flex items-center gap-2 text-xs font-mono text-slate-400">
+            <div key={name} className="flex items-center gap-2 text-xs font-mono text-slate-600">
               <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: pc(name) }} />
               {name}
             </div>
@@ -264,18 +292,18 @@ export default function MapView({ listings, selectedCity, onCitySelect, onAreaSe
 
       {/* Instruction */}
       {selectMode && (
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/95
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-[1000] bg-white/95
                         border border-emerald-500/40 rounded-xl px-4 py-2 text-xs font-mono
-                        text-emerald-400 shadow-lg pointer-events-none whitespace-nowrap">
+                        text-emerald-600 shadow-lg pointer-events-none whitespace-nowrap">
           {t(lang,"dragInstruction")}
         </div>
       )}
 
       {/* City hint */}
       {listings.length === 0 && (
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/80
-                        border border-slate-700 rounded-xl px-4 py-2 text-xs font-mono
-                        text-slate-400 pointer-events-none whitespace-nowrap">
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[1000] bg-white/80
+                        border border-slate-700/20 rounded-xl px-4 py-2 text-xs font-mono
+                        text-slate-500 pointer-events-none whitespace-nowrap">
           {t(lang,"clickCity")}
         </div>
       )}
