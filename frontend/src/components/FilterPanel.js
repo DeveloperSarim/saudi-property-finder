@@ -249,6 +249,21 @@ export default function FilterPanel({ filters, onChange, onSearch, loading, sele
       .catch(() => {});
   }, []);
 
+  // ── Sync local selectedCity with filters.location prop ──────────────────
+  useEffect(() => {
+    const loc = filters.location || "";
+    if (loc) {
+      const matched = CITIES.find(c => loc.toLowerCase().includes(c.toLowerCase()));
+      if (matched) {
+        setSelectedCity(matched);
+      } else {
+        setSelectedCity("");
+      }
+    } else {
+      setSelectedCity("");
+    }
+  }, [filters.location]);
+
   // ── Fetch areas when city changes ─────────────────────────────────────
   useEffect(() => {
     if (!selectedCity) { setAreas([]); setDistricts([]); return; }

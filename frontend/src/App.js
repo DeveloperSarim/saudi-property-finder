@@ -211,7 +211,7 @@ export default function App() {
     setFilters(f => ({ ...f, location: city }));
   }, []);
 
-  const handleAreaSearch = useCallback(({ bounds }) => {
+  const handleAreaSearch = useCallback(({ lat, lng, bounds }) => {
     if (!bounds) return;
     setMapFilter({
       type: "bounds",
@@ -220,6 +220,10 @@ export default function App() {
         northEast: { lat: bounds.getNorthEast().lat, lng: bounds.getNorthEast().lng }
       }
     });
+    if (lat && lng) {
+      const city = nearestCity(lat, lng);
+      setFilters(f => ({ ...f, location: city }));
+    }
   }, []);
 
   const isRtl = lang === "ar";
